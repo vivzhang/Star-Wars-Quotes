@@ -25,7 +25,8 @@ update.addEventListener('click', function() {
       'name': 'Darth Vader',
       'quote': 'I find you lack of faith disturbing.'
     })
-  }).then(res => {
+  })
+  .then(res => {
     if (res.ok) return res.json();
   })
   .then(data => {
@@ -35,6 +36,21 @@ update.addEventListener('click', function() {
   })
 })
 
-
-
+var del = document.getElementById('delete');
+del.addEventListener('click', function() {
+  fetch('quotes', {
+    method: 'delete',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      'name': 'Darth Vadar'
+    })
+  })
+  .then(res => {
+    if (res.ok) return res.json();
+  })
+  .then(data => {
+    console.log(data);
+    window.location.reload(true);
+  })
+})
 
