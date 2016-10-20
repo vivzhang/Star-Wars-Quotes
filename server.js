@@ -84,7 +84,7 @@ MongoClient.connect(mongolink, (err, database) => {
 // added ejs as our template engine(break HTML code into smaller files and lets you use data)
 app.set('view engine', 'ejs');
 
-// U - UPDATE
+// U - UPDATE (use <form> element to get PULL request triggered)
 
 // whenver we use .use(), the function we passed in is a middleware
 // .static makes the public folder accessible to the public
@@ -119,8 +119,24 @@ app.put('/quotes', (req, res) => {
     },
     // callback
     (err, result) => {
-      if (err) return res.send(err)
-      res.send(result);
+      if (err) return res.send(err);
+      res.send(result)
     }
   )
 })
+
+// D - DELETE (use javascript to get DELETE request triggered)
+
+app.delete('/quotes', (req, res) => {
+  // handle delete event here
+  db.collection('quotes').findOneAndDelete( // 3 para, query, option, callback
+    { name: req.body.name },
+    (err, result) => {
+      if (err) return res.send(500, err);
+      res.send(JSON.stringify('A darth vadar quote got deleted'))
+    }
+  )
+})
+
+
+
