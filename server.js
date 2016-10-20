@@ -8,6 +8,7 @@ const app = express();
 const MongoClient = require('mongodb').MongoClient;
 
 // The urlencoded method within body-parser tells body-parser to extract data from the <form> element and add them to the body of the request
+// (whatever is in app.use() is usually a middleware)
 app.use(bodyParser.urlencoded({extended: true}));
 
 // all handlers below
@@ -83,8 +84,43 @@ MongoClient.connect(mongolink, (err, database) => {
 // added ejs as our template engine(break HTML code into smaller files and lets you use data)
 app.set('view engine', 'ejs');
 
+// U - UPDATE
 
+// whenver we use .use(), the function we passed in is a middleware
+// .static makes the public folder accessible to the public
+app.use(express.static('public'));
 
+// make server to read JSON file by using bodyParser.json() since server can't read JSON file
+app.use(bodyParser.json());
 
-
-
+// req here is the request from fetch
+app.put('/quotes', (req, res) => {
+  // handle put request
+  // we will look for the last quote by Master Yoda and change it to a quote by Darth Vadar in MongoDB
+  // .findOneAndUpdate(4 paras) in mongo changes one item from the database
+  db.collection('quotes').findOneAndUpdate(
+    // query, allows us to filter the collection through key-value pairs given to it
+    {
+      name: 'Yoda'
+    },
+    // update, tells mongo what to do with the update request
+    {
+      // $set is one of mongo's update operators ($inc, $push etc)
+      $set: {
+        name: req.body.name,
+        quote: req.body.quote
+      }
+    },
+    // options, optional para allow you to define addition request
+    {
+      sort: {_id: -1},
+      // if there is no quotes by Master Yoda, will insert a new one
+      upsert: true
+    },
+    // callback
+    (err, result) => {
+      if (err) return res.send(err)
+      res.send(result);
+    }
+  )
+})
