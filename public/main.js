@@ -22,7 +22,7 @@ update.addEventListener('click', function() {
     headers: {'Content-Type': 'application/json'},
     // convert body's content into JSON
     body: JSON.stringify({
-      'name': 'Darth Vader',
+      'name': 'Darth Vadar',
       'quote': 'I find you lack of faith disturbing.'
     })
   })
@@ -42,7 +42,7 @@ del.addEventListener('click', function() {
     method: 'delete',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
-      'name': 'Darth Vadar'
+      'name': 'Elmer'
     })
   })
   .then(res => {

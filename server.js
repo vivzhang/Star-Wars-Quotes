@@ -7,15 +7,16 @@ const bodyParser = require('body-parser');
 const app = express();
 const MongoClient = require('mongodb').MongoClient;
 
+// express' .use method allows us to use any middlewares(inside app.use())
 // The urlencoded method within body-parser tells body-parser to extract data from the <form> element and add them to the body of the request
-// (whatever is in app.use() is usually a middleware)
+// *** ALWAYS PUT bodyParser BEFORE THE CRUD HANDLERS ***
 app.use(bodyParser.urlencoded({extended: true}));
 
-// all handlers below
+// *************** CRUD handlers below ***************
 
 // created server with express and listening to port 3000
-// app.listen(3000, function() {
-//   console.log('listening on 3000');
+// app.listen(8000, function() {
+//   console.log('listening on 8000');
 // })
 
 // R - READ
@@ -54,12 +55,13 @@ app.get('/', (req, res) => {
   //   quote: 'You are not wearing enough!' } ]
 })
 
-// C - CREATE
+// C - CREATE (use <form> element to get PULL request triggered)
 app.post('/quotes', (req, res) => {
-  // req.body contains the text in input
-  // console.log(req.body); // { name: 'viv', quote: 'hey' }
+  // req.body contains the body of the request(have to use bodyParser first, above)
+  // console.log(req.body); // { name: 'Yoda', quote: 'hey' }
   // create a quotes collection in database and save req.body in it simultaneously
-  // first para in save() is the documentation we want to save
+  // db.collection('quotes') is the {...} of the new quote just been submitted
+  // 1st para in save() is the documentation we want to save, 2nd is optional
   db.collection('quotes').save(req.body, (err, result) => {
     if (err) return console.log(err);
     console.log('saved to database');
@@ -68,14 +70,15 @@ app.post('/quotes', (req, res) => {
   })
 })
 
+// ***** connect server with mongo database *****
+
 var mongolink = 'mongodb://vivzhang:starwar@ds019916.mlab.com:19916/star-war-quotes';
 
 var db;
 MongoClient.connect(mongolink, (err, database) => {
   if (err) return console.log(err);
   db = database;
-  // we want to start our sever when the database is connected, so we moved
-  // .listen in connect
+  // always start the sever when the database is connected, put .listen in .connect
   app.listen(8000, () => {
     console.log('listening on 8000');
   })
@@ -84,7 +87,7 @@ MongoClient.connect(mongolink, (err, database) => {
 // added ejs as our template engine(break HTML code into smaller files and lets you use data)
 app.set('view engine', 'ejs');
 
-// U - UPDATE (use <form> element to get PULL request triggered)
+// U - UPDATE
 
 // whenver we use .use(), the function we passed in is a middleware
 // .static makes the public folder accessible to the public
