@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>MY STARWAR APP</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<body>
+<body class='container'>
   <ul class='quotes'>
   <% for(var i = 0; i < quotes.length; i++) {%>
     <li class='quotes'>
@@ -21,7 +22,7 @@
   </form>
 
   <div>
-    <h2>Replace last quote written by Master Yoda with a quote written by Darth Vadar</h2>
+    <h2 class="replace">Replace last quote written by Master Yoda with a quote written by Darth Vadar</h2>
     <button id="update"> Darth Vadar invades! </button>
   </div>
 
